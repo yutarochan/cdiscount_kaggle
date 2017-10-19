@@ -1,0 +1,6 @@
+bson
+numpy
+pandas
+seaborn
+matplotlib
+scikit-image
