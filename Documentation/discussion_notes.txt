@@ -1,0 +1,46 @@
+[Discussion Notes]
+The following note are summaries that have been pulled from various sources and
+posting on Kaggle; from practical tips to scores and other policies regarding the
+competition.
+
+<Competition>
+- Text based features alone produced significant results. This may potentially
+be an interesting indicator to pretrain a hierarchy of models based on the
+predefined semantics of each product type.
+- Benchmark Results Baseline: Inception V3 Model (~70%)
+
+<External Data/Model Use>
+- Pretrained Models Allowed
+- Keras:
+    - Inception V3 [ImageNet]
+    - Inception V4 [ImageNet]
+    - VGG16 [ImageNet]
+    - ResNet 50 [ImageNet]
+    - MobileNet [ImageNet]
+- Amazon Dataset: http://jmcauley.ucsd.edu/data/amazon/ [We Have Permission From Author]
+
+<Training Strategy>
+Bestfitting's Strategy of Training
+http://blog.kaggle.com/2017/10/17/planet-understanding-the-amazon-from-space-1st-place-winners-interview/
+
+1. Analyze the overall distribution of the training sample dataset labels.
+2. Evaluate the performance of each of the models and devise a strategy to pick
+up the ball for the weakness of each model's capabilities.
+3. Consider other key aspects of the modeling process, which includes:
+    a. Data augmentation strategies
+    b. Sample the type of images based on the loss function's distribution
+    c. Consider how to balance the categories per image
+
+Hard Sample Strategy
+https://arxiv.org/abs/1604.03540
+- Pay close attention to implementation details and experimentation methods.
+- Online Hard Example Mining techniques.
+
+<Pretrained Models>
+https://www.kaggle.com/c/cdiscount-image-classification-challenge/discussion/40498
+https://www.kaggle.com/c/cdiscount-image-classification-challenge/discussion/41021
+
+<MongoDB Database Loading>
+https://gist.github.com/erogol/f76ffc9ad4bc61263ec41fa7e96b3ae2
+
+1080 TI - 11.3 TFLOPs
