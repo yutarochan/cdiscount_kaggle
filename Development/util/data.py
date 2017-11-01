@@ -46,6 +46,7 @@ def build_catlookup(input_file):
     return cat2idx, idx2cat
 
 # BSON Data Loader
+# TODO: Configure this to perform the computation in parallel.
 def read_bson(bson_path, num_records, with_categories):
     rows = {}
     with open(bson_path, "rb") as f, tqdm(total=num_records) as pbar:
@@ -60,7 +61,7 @@ def read_bson(bson_path, num_records, with_categories):
             item_data = f.read(length)
             assert len(item_data) == length
 
-            item = bson.BSON.decode(item_data)
+            item = bson.BSON(item_data).decode()
             product_id = item["_id"]
             num_imgs = len(item["imgs"])
 
