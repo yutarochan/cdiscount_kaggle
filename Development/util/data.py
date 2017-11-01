@@ -83,7 +83,7 @@ def read_bson(bson_path, num_records, with_categories):
 
 # Generate Item Offset and Length Metadata CSV
 def gen_trainoffsetcsv(report_stat=False):
-    train_offsets_df = read_bson(train_bson_path, num_records=num_train_products, with_categories=True)
+    train_offsets_df = read_bson(TRAIN_BSON_PATH, num_records=NUM_TRAIN_PROD, with_categories=True)
 
     if report_stat:
         print('PRODUCT COUNT: ' + str(len(train_offsets_df)))
@@ -93,5 +93,5 @@ def gen_trainoffsetcsv(report_stat=False):
     train_offsets_df.to_csv(DATA_DIR + "train_offsets.csv")
 
 if __name__ == '__main__':
-    # gen_lookupcsv(DATA_DIR+'category_names.csv', DATA_DIR+'categories.csv')   # Generate Lookup CSV File
-    # gen_trainoffsetcsv(True)    # Generate Item Offset CSV File
+    # gen_lookupcsv('category_names.csv', 'categories.csv')   # Generate Lookup CSV File
+    gen_trainoffsetcsv(True)    # Generate Item Offset CSV File
