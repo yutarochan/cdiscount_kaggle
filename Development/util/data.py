@@ -2,7 +2,10 @@
 Dataset Utility CLI & Library
 Contains various auxillary functions for dataset management and loading.
 
-Source: https://www.kaggle.com/humananalog/keras-generator-for-reading-directly-from-bson
+Sources Utilized:
+- https://www.kaggle.com/humananalog/keras-generator-for-reading-directly-from-bson
+- https://www.kaggle.com/theblackcat/loading-bson-data-for-keras-fit-generator/notebook
+
 Author: Yuya Jeremy Ong (yjo5006@psu.edu)
 '''
 from __future__ import print_function
@@ -18,23 +21,27 @@ import pandas as pd
 import multiprocessing as mp
 
 # Application Parameters
-DATA_DIR = '/backups4/emotion/.data/'
+DATA_DIR = '/storage/work/yjo5006/data/'
 
+TRAIN_SAMPLE_PATH = os.path.join(DATA_DIR, "train_example.bson")
 TRAIN_BSON_PATH = os.path.join(DATA_DIR, "train.bson")
 TEST_BSON_PATH  = os.path.join(DATA_DIR, "test.bson")
+CATEGORY_PATH = os.path.join(DATA_DIR, "categories.csv")
 
 NUM_TRAIN_PROD = 7069896
 NUM_TEST_PROD  = 1768182
 
+CAT_SIZE = 5270
+
 # Generate Category Lookup CSV Table
-def gen_lookupcsv(input_file, output_file):
+def build_lookup(input_file, output_file):
     cat_path = os.path.join(DATA_DIR, input_file)
     cat_df = pd.read_csv(cat_path, index_col="category_id")
     cat_df["category_idx"] = pd.Series(range(len(cat_df)), index=cat_df.index)
     cat_df.to_csv(DATA_DIR + output_file)
 
 # Build Lookup Dictionary for Categories
-def build_catlookup(input_file):
+def build_cat(input_file):
     cat2idx = {}
     idx2cat = {}
     cat_df = pd.read_csv(input_file, index_col="category_id")
@@ -45,54 +52,66 @@ def build_catlookup(input_file):
         idx2cat[category_idx] = category_id
     return cat2idx, idx2cat
 
-# BSON Data Loader
-# TODO: Configure this to perform the computation in parallel.
-def read_bson(bson_path, num_records, with_categories):
-    rows = {}
-    with open(bson_path, "rb") as f, tqdm(total=num_records) as pbar:
-        offset = 0
-        while True:
-            item_length_bytes = f.read(4)
-            if len(item_length_bytes) == 0: break
+# Category to One-Hot Encoded Vector
+def hot_cat(cat, cat2idx):
+    return True, ([0] * CAT_SIZE)[cat2idx[cat]]
 
-            length = struct.unpack("<i", item_length_bytes)[0]
+# Keras Data Generator
+def data_generator(batch_size=128, st_idx=0):
+    cnt_prod = 0
+    X = []
+    y = []
+    while True:
+        cnt = 0
+        for d in data:
+            # Skip to Start Index
+            if cnt_prod < st_idx:
+                cnt_prod += 1
+                continue
 
-            f.seek(offset)
-            item_data = f.read(length)
-            assert len(item_data) == length
+            # One Hot Encoding Index Conversion from Category Data
+            success, one_hot = hot_cat(d['category_id'])
 
-            item = bson.BSON(item_data).decode()
-            product_id = item["_id"]
-            num_imgs = len(item["imgs"])
+            # Pass if ID Conversion Failed
+            if not success:
+                print('ID Conversion Failed')
+                continue
 
-            row = [num_imgs, offset, length]
-            if with_categories: row += [item["category_id"]]
-            rows[product_id] = row
+            # Iterate through Each Picture Sample
+            for pic in d['imgs']:
+                X.append(imread(io.BytesIO(pic['picture'])))
+                y.append(one_hot)
+                cnt += 1
 
-            offset += length
-            f.seek(offset)
-            pbar.update()
+            if cnt >= batch_size:
+                cnt = 0
+                X = np.asarray(X)
+                y = np.asarray(y)
 
-    columns = ["num_imgs", "offset", "length"]
-    if with_categories: columns += ["category_id"]
+                # Perform Shuffling Operation (Every Day I'm Shufflin')
+                for i, im in enumerate(X[:int(batch_size/2)]):
+                    j = randint(0, batch_size-1)
+                    y_temp = y[i]
+                    img_temp = im
+                    X[i] = X[j]
+                    y[i] = y[j]
+                    X[j] = img_temp
+                    y[j] = y_temp
 
-    df = pd.DataFrame.from_dict(rows, orient="index")
-    df.index.name = "product_id"
-    df.columns = columns
-    df.sort_index(inplace=True)
-    return df
+                # Yield Final Batch Result
+                yield X, y
 
-# Generate Item Offset and Length Metadata CSV
-def gen_trainoffsetcsv(report_stat=False):
-    train_offsets_df = read_bson(TRAIN_BSON_PATH, num_records=NUM_TRAIN_PROD, with_categories=True)
+                # Clear Off Batch Memory
+                del X
+                del y
+                X = []
+                y = []
 
-    if report_stat:
-        print('PRODUCT COUNT: ' + str(len(train_offsets_df)))
-        print('PRODUCT CATEGORY COUNT: ' + str(len(train_offsets_df["category_id"].unique())))
-        print('TOTAL IMAGE COUNT: ' + str(train_offsets_df["num_imgs"].sum()))
-
-    train_offsets_df.to_csv(DATA_DIR + "train_offsets.csv")
 
 if __name__ == '__main__':
     # gen_lookupcsv('category_names.csv', 'categories.csv')   # Generate Lookup CSV File
-    gen_trainoffsetcsv(True)    # Generate Item Offset CSV File
+    cat = build_cat(CATEGORY_PATH)
+    gen = data_generator()
+    next(train_gen)
+
+    %time bx, by = next(train_gen)
