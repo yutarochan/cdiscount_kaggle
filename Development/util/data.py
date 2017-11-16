@@ -14,6 +14,7 @@ import os
 import sys
 import math
 import bson
+import timeit
 import struct
 from tqdm import *
 import numpy as np
@@ -58,6 +59,7 @@ def hot_cat(cat, cat2idx):
 
 # Keras Data Generator
 def data_generator(batch_size=128, st_idx=0):
+    data = bson.decode_file_iter(open(TRAIN_BSON_PATH, 'rb'))
     cnt_prod = 0
     X = []
     y = []
@@ -114,4 +116,8 @@ if __name__ == '__main__':
     gen = data_generator()
     next(train_gen)
 
-    %time bx, by = next(train_gen)
+    start = timeit.timeit()
+    bx, by = next(train_gen)
+    end = timeit.timeit()
+
+    print(end - start)
