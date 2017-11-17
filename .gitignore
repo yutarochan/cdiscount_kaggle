@@ -1,5 +1,5 @@
 .DS_STORE
 *.pyc
-cookies.txt
+__pycache__
 
 Data/

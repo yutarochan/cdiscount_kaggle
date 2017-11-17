@@ -16,7 +16,6 @@ import math
 import bson
 import timeit
 import struct
-from tqdm import *
 import numpy as np
 import pandas as pd
 import multiprocessing as mp
@@ -58,8 +57,8 @@ def hot_cat(cat, cat2idx):
     return True, ([0] * CAT_SIZE)[cat2idx[cat]]
 
 # Keras Data Generator
-def data_generator(batch_size=128, st_idx=0):
-    data = bson.decode_file_iter(open(TRAIN_BSON_PATH, 'rb'))
+def data_generator(path, batch_size=128, st_idx=0):
+    data = bson.decode_file_iter(open(path, 'rb'))
     cnt_prod = 0
     X = []
     y = []
