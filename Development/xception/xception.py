@@ -43,7 +43,7 @@ model.compile(optimizer=Adam(lr=1.0e-4), loss=categorical_crossentropy, metrics=
 # TODO: Append System Callback Mechanism to Keep Track of Training
 history = model.fit_generator(
     generator = data.data_generator(data.TRAIN_BSON_PATH, batch_size=batch_size_pre),
-    steps_per_epoch = math.ceil(len(data.NUM_TRAIN_PROD) / batch_size_fine),
+    steps_per_epoch = math.ceil(data.NUM_TRAIN_PROD / batch_size_fine),
     epochs = epochs_fine,
     verbose = 1
 )
