@@ -14,11 +14,11 @@ import os
 import sys
 import math
 import bson
-import timeit
 import struct
 import numpy as np
 import pandas as pd
-import multiprocessing as mp
+from random import randint
+from skimage.data import imread
 
 # Application Parameters
 DATA_DIR = '/storage/work/yjo5006/data/'
@@ -112,16 +112,3 @@ def data_generator(path, batch_size=128, st_idx=0):
 
 if __name__ == '__main__':
     gen_lookupcsv('category_names.csv', 'categories.csv')   # Generate Lookup CSV File
-
-    '''
-    # Test Keras Data Generator Function
-    cat = build_cat(CATEGORY_PATH)
-    gen = data_generator()
-    next(train_gen)
-
-    start = timeit.timeit()
-    bx, by = next(train_gen)
-    end = timeit.timeit()
-
-    print(end - start)
-    '''
