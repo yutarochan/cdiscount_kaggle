@@ -29,7 +29,7 @@ epochs_pre  = 10
 epochs_fine = 200
 
 # Initialize Callback Methods
-tensorboard = TensorBoard(log_dir='./logs', histogram_freq=0, write_graph=True, write_images=False)
+tensorboard = TensorBoard(log_dir='./logs', histogram_freq=1, write_graph=True, write_images=False)
 chk_pt_1 = ModelCheckpoint(base_model_wp, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
 chk_pt_2 = ModelCheckpoint(fine_model_wp, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
 
