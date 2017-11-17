@@ -59,6 +59,8 @@ def hot_cat(cat, cat2idx):
 # Keras Data Generator
 def data_generator(path, batch_size=128, st_idx=0):
     data = bson.decode_file_iter(open(path, 'rb'))
+    cat2idx, idx2cat = build_cat(CATEGORY_PATH)
+
     cnt_prod = 0
     X = []
     y = []
@@ -71,7 +73,7 @@ def data_generator(path, batch_size=128, st_idx=0):
                 continue
 
             # One Hot Encoding Index Conversion from Category Data
-            success, one_hot = hot_cat(d['category_id'])
+            success, one_hot = hot_cat(d['category_id'], cat2idx)
 
             # Pass if ID Conversion Failed
             if not success:
