@@ -48,20 +48,22 @@ model = Model(inputs=base_model.inputs, outputs=preds)
 # Phase 1: Base Model Training
 print('[Phase 1]: Base Model Training')
 for layer in base_model.layers: layer.trainable = False
-model.compile(optimizer=Adam(), loss=categorical_crossentropy, metrics=['accuracy'], callbacks=[tensorboard, chk_pt_1])
+model.compile(optimizer=Adam(), loss=categorical_crossentropy, metrics=['accuracy'])
 model.fit_generator(
     generator = data.data_generator(data.TRAIN_BSON_PATH, batch_size=batch_size_pre),
     steps_per_epoch = math.ceil(data.NUM_TRAIN_PROD / batch_size_pre),
+    callbacks=[tensorboard, chk_pt_1],
     epochs = epochs_pre,
     verbose=1,
 )
 
 # Phase 2: Train All Layers (with Lower Learning Rate)
 for layer in model.layers: layer.trainable = True
-model.compile(optimizer=Adam(lr=1.0e-4), loss=categorical_crossentropy, metrics=['accuracy'], callbacks=[tensorboard, chk_pt_2])
+model.compile(optimizer=Adam(lr=1.0e-4), loss=categorical_crossentropy, metrics=['accuracy'])
 model.fit_generator(
     generator = data.data_generator(data.TRAIN_BSON_PATH, batch_size=batch_size_fine),
     steps_per_epoch = math.ceil(data.NUM_TRAIN_PROD / batch_size_fine),
+    callbacks=[tensorboard, chk_pt_2],
     epochs = epochs_fine,
     verbose=1,
 )
