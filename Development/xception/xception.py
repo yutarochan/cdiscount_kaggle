@@ -3,8 +3,12 @@ CDiscount: Xception Model (No Pretrained)
 Author: Yuya Jeremy Ong (yjo5006@psu.edu)
 '''
 import sys
-from keras.models import Model, load_model
+
+from keras.models import Model
+from keras.optimizers import Adam
 from keras.applications.xception import Xception
+from keras.losses import categorical_crossentropy
+from keras.layers import Dense, GlobalAveragePooling2D
 
 sys.path.append('..')
 import util.data as data
