@@ -3,7 +3,7 @@ CDiscount: Xception Model (No Pretrained)
 Author: Yuya Jeremy Ong (yjo5006@psu.edu)
 '''
 import sys
-
+import math
 from keras.models import Model
 from keras.optimizers import Adam
 from keras.applications.xception import Xception
