@@ -54,7 +54,9 @@ def build_cat(input_file):
 
 # Category to One-Hot Encoded Vector
 def hot_cat(cat, cat2idx):
-    return True, ([0] * CAT_SIZE)[cat2idx[cat]]
+    vec = ([0] * CAT_SIZE)
+    vec[cat2idx[cat]] = 1
+    return True, vec
 
 # Keras Data Generator
 def data_generator(path, batch_size=128, st_idx=0):
@@ -111,4 +113,20 @@ def data_generator(path, batch_size=128, st_idx=0):
                 y = []
 
 if __name__ == '__main__':
-    gen_lookupcsv('category_names.csv', 'categories.csv')   # Generate Lookup CSV File
+    # gen_lookupcsv('category_names.csv', 'categories.csv')   # Generate Lookup CSV File
+
+    # Test Generator Function
+    train_gen = data_generator(TRAIN_BSON_PATH)
+    next(train_gen)
+
+    bx, by = next(train_gen)
+    # print(bx.shape)
+    # print(by[0].shape)
+    print(bx[0])
+    print(by[0])
+
+    '''
+    cat2idx, idx2cat = build_cat(CATEGORY_PATH)
+    vec = ([0]*CAT_SIZE)cat2idx[1000021794]
+    print(cat2idx[1000021794])
+    '''
