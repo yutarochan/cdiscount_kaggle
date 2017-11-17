@@ -5,31 +5,28 @@ Author: Yuya Jeremy Ong (yjo5006@psu.edu)
 import sys
 import math
 
-import losswise
-from losswise.libs import LosswiseKerasCallback
-
 import tensorflow as tf
 
 from keras.models import Model
 from keras.optimizers import Adam
 from keras.callbacks import ModelCheckpoint
-from keras.applications.xception import Xception
 from keras.losses import categorical_crossentropy
 from keras.layers import Dense, GlobalAveragePooling2D
+from keras.applications.xception import Xception, RemoteMonitor
 
 sys.path.append('..')
 import util.data as data
 
-# Losswise API
-losswise.set_api_key('6dxfajor')
+# Remote Monitoring Service
+remote = RemoteMonitor(root='http://localhost:9000')
 
 # Application Parameters
 base_model_wp = "base_model-{epoch:02d}-{val_acc:.2f}.hdf5"
 fine_model_wp = "fine_model-{epoch:02d}-{val_acc:.2f}.hdf5"
 
 # Model Parameters
-batch_size_pre  = 64
-batch_size_fine = 32
+batch_size_pre  = 256
+batch_size_fine = 128
 
 epochs_pre  = 10
 epochs_fine = 200
@@ -58,7 +55,7 @@ model.compile(optimizer=Adam(), loss=categorical_crossentropy, metrics=['accurac
 model.fit_generator(
     generator = data.data_generator(data.TRAIN_BSON_PATH, batch_size=batch_size_pre),
     steps_per_epoch = math.ceil(data.NUM_TRAIN_PROD / batch_size_pre),
-    callbacks=[lw_cb, chk_pt_1],
+    callbacks=[chk_pt_1, remote],
     epochs = epochs_pre,
     verbose=1,
 )
@@ -69,7 +66,7 @@ model.compile(optimizer=Adam(lr=1.0e-4), loss=categorical_crossentropy, metrics=
 model.fit_generator(
     generator = data.data_generator(data.TRAIN_BSON_PATH, batch_size=batch_size_fine),
     steps_per_epoch = math.ceil(data.NUM_TRAIN_PROD / batch_size_fine),
-    callbacks=[lw_cb, chk_pt_2],
+    callbacks=[chk_pt_2, remote],
     epochs = epochs_fine,
     verbose=1,
 )
