@@ -4,6 +4,7 @@ Author: Yuya Jeremy Ong (yjo5006@psu.edu)
 '''
 import sys
 import math
+import tensorflow as tf
 from keras.models import Model
 from keras.optimizers import Adam
 from keras.applications.xception import Xception
@@ -14,9 +15,9 @@ sys.path.append('..')
 import util.data as data
 
 # Model Parameters
-batch_size_fine = 256
-batch_size_pre  = 128
-epochs_fine = 100
+batch_size_pre  = 64
+batch_size_fine = 32
+epochs_fine = 200
 
 def build_model():
     # Initialize Model
@@ -43,7 +44,7 @@ model.compile(optimizer=Adam(lr=1.0e-4), loss=categorical_crossentropy, metrics=
 # TODO: Append System Callback Mechanism to Keep Track of Training
 history = model.fit_generator(
     generator = data.data_generator(data.TRAIN_BSON_PATH, batch_size=batch_size_pre),
-    steps_per_epoch = math.ceil(data.NUM_TRAIN_PROD / batch_size_fine),
+    steps_per_epoch = data.NUM_TRAIN_PROD / batch_size_fine,
     epochs = epochs_fine,
     verbose = 1
 )
