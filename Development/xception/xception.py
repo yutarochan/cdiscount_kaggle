@@ -32,7 +32,6 @@ epochs_pre  = 10
 epochs_fine = 200
 
 # Initialize Callback Methods
-lw_cb = LosswiseKerasCallback(tag='cdiscount')
 chk_pt_1 = ModelCheckpoint(base_model_wp, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
 chk_pt_2 = ModelCheckpoint(fine_model_wp, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
 
