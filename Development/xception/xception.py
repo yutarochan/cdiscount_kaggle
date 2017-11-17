@@ -9,10 +9,10 @@ import tensorflow as tf
 
 from keras.models import Model
 from keras.optimizers import Adam
-from keras.callbacks import TensorBoard
 from keras.applications.xception import Xception
 from keras.losses import categorical_crossentropy
 from keras.layers import Dense, GlobalAveragePooling2D
+from keras.callbacks import TensorBoard, ModelCheckpoint
 
 sys.path.append('..')
 import util.data as data
