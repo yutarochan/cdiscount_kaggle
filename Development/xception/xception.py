@@ -26,8 +26,8 @@ base_model_wp = "base_model-{epoch:02d}-{val_acc:.2f}.hdf5"
 fine_model_wp = "fine_model-{epoch:02d}-{val_acc:.2f}.hdf5"
 
 # Model Parameters
-batch_size_pre  = 256
-batch_size_fine = 128
+batch_size_pre  = 512
+batch_size_fine = 256
 
 epochs_pre  = 10
 epochs_fine = 200
