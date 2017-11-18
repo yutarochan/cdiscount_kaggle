@@ -12,6 +12,7 @@ from keras.optimizers import Adam
 from keras.applications.xception import Xception
 from keras.losses import categorical_crossentropy
 from keras.layers import Dense, GlobalAveragePooling2D
+from keras.utils.training_utils import multi_gpu_model
 from keras.callbacks import ModelCheckpoint, RemoteMonitor
 
 sys.path.append('..')
@@ -46,6 +47,9 @@ x = Dense(8192, activation='relu')(x)
 # Build Model
 preds = Dense(data.CAT_SIZE, activation='softmax')(x)
 model = Model(inputs=base_model.inputs, outputs=preds)
+
+# Utilize Multiple GPU
+model = multi_gpu_model(model, gpus=4)
 
 # Phase 1: Base Model Training
 print('[Phase 1]: Base Model Training')
