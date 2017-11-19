@@ -22,8 +22,8 @@ import util.data as data
 remote = RemoteMonitor(root='http://localhost:9000')
 
 # Application Parameters
-base_model_wp = "base_model-{epoch:02d}-{val_acc:.2f}.hdf5"
-fine_model_wp = "fine_model-{epoch:02d}-{val_acc:.2f}.hdf5"
+base_model_wp = "base_model-{epoch:02d}.hdf5"
+fine_model_wp = "fine_model-{epoch:02d}.hdf5"
 
 # Model Parameters
 batch_size_pre  = 512
